@@ -1,7 +1,0 @@
-spring.datasource.url=jdbc:mysql://${MYSQL_HOST:localhost}:3306/yukartdata
-spring.datasource.username=root
-spring.datasource.password=Kalim251197
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.open-in-view=false
-spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-spring.jpa.show-sql: true
