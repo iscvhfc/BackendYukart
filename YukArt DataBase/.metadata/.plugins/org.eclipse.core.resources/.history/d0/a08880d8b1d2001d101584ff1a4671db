@@ -1,0 +1,5 @@
+package com.labanda.yukart.controller;
+
+public class ProductosController {
+
+}

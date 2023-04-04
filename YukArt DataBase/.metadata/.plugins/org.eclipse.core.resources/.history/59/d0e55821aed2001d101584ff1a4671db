@@ -1,0 +1,62 @@
+package com.labanda.yukart.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.labanda.yukart.models.PagoModel;
+import com.labanda.yukart.services.PagoService;
+
+@RestController
+@RequestMapping("/pagos")
+public class PagoController {
+
+    @Autowired
+    private PagoService pagoService;
+
+    @GetMapping
+    public ResponseEntity<List<PagoModel>> listarPagos() {
+        List<PagoModel> listaPagos = pagoService.listarPagos();
+        return ResponseEntity.ok(listaPagos);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PagoModel> obtenerPago(@PathVariable("id") Long id) {
+        PagoModel pago = pagoService.obtenerPago(id);
+        if (pago == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(pago);
+    }
+
+    @PostMapping
+    public ResponseEntity<PagoModel> guardarPago(@RequestBody PagoModel pago) {
+        PagoModel nuevoPago = pagoService.guardarPago(pago);
+        return ResponseEntity.status(HttpStatus.CREATED).body(nuevoPago);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PagoModel> actualizarPago(@PathVariable("id") Long id, @RequestBody PagoModel pago) {
+        PagoModel pagoActualizado = pagoService.actualizarPago(id, pago);
+        if (pagoActualizado == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(pagoActualizado);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarPago(@PathVariable("id") Long id) {
+        pagoService.eliminarPago(id);
+        return ResponseEntity.noContent().build();
+    }
+}

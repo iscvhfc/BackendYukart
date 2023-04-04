@@ -1,0 +1,71 @@
+package com.labanda.yukart.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.labanda.yukart.models.PagoModel;
+import com.labanda.yukart.services.PagoService;
+
+@RestController
+@RequestMapping("/api/pagos")
+public class PagoController {
+
+    @Autowired
+    private PagoService pagoService;
+
+    @GetMapping
+    public ResponseEntity<List<PagoModel>> getAllPagos() {
+        List<PagoModel> pagos = pagoService.listarPagos();
+        return new ResponseEntity<>(pagos, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PagoModel> getPagoById(@PathVariable Long id) {
+        PagoModel pago = pagoService.obtenerPago(id);
+        if (pago == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(pago, HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<PagoModel> addPago(@RequestBody PagoModel pago) {
+        pagoService.guardarPago(pago);
+        return new ResponseEntity<>(pago, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PagoModel> updatePago(@PathVariable Long id, @RequestBody PagoModel pago) {
+        PagoModel existingPago = pagoService.obtenerPago(id);
+        if (existingPago == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        existingPago.setNombre_tarjeta(pago.getNombre_tarjeta());
+        existingPago.setNumero_tarjeta(pago.getNumero_tarjeta());
+        existingPago.setFecha_vencimiento(pago.getFecha_vencimiento());
+        existingPago.setCvv(pago.getCvv());
+        pagoService.actualizarPago(existingPago);
+        return new ResponseEntity<>(existingPago, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deletePago(@PathVariable Long id) {
+        PagoModel pago = pagoService.obtenerPago(id);
+        if (pago == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        pagoService.eliminarPago(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+}
